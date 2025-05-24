@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Calculator
+Icon=/icon/calculator.png
+Exec=calculator
+Terminal=false 
+Categories=Development;
