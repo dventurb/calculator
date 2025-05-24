@@ -1,7 +1,7 @@
 <div align ="center">
     <!--LOGO-->
     <a href="github.com/dventurb/calculator">
-    <img src="https://github.com/dventurb/calculator/icon/calculator.png" alt="Logo" width="64" height="64">
+    <img src="https://github.com/dventurb/calculator/blob/main/icon/calculator.png" alt="Logo" width="64" height="64">
 </a>
 
 <!--PROJECT NAME-->
