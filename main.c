@@ -47,6 +47,7 @@ static void process_button(GtkButton *button, gpointer data);
 static void calculate(ST_AppUI *app_ui, GtkEntryBuffer *buffer, const char *expression);
 static void add_to_history(ST_AppUI *app_ui, const char *expression, const char *result);
 static gboolean key_pressed(GtkEventControllerKey *controller, guint keyval, guint keycode, GdkModifierType state, gpointer data);
+int count_digits(int num);
 static gboolean timeout(gpointer data);
 
 int main (int argc, char **argv){
@@ -87,7 +88,7 @@ static void create_main_window(GtkApplication *app, gpointer data){
   GtkEventController *controller = gtk_event_controller_key_new();
   gtk_event_controller_set_propagation_phase(controller, GTK_PHASE_CAPTURE);
   g_signal_connect(controller, "key-pressed", G_CALLBACK(key_pressed), app_ui);
-  gtk_widget_add_controller(app_ui->entry, controller);
+  gtk_widget_add_controller(app_ui->window, controller);
 
   app_ui->grid = gtk_grid_new();
   gtk_grid_set_column_spacing(GTK_GRID(app_ui->grid), 3);
@@ -274,13 +275,65 @@ static gboolean key_pressed(GtkEventControllerKey *controller, guint keyval, gui
 
   GtkEntryBuffer *buffer = gtk_entry_get_buffer(GTK_ENTRY(app_ui->entry));
   const char *input = gtk_entry_buffer_get_text(buffer);
+  
+  if(app_ui->clear == true){
+    gtk_entry_buffer_set_text(buffer, "", -1);
+    app_ui->clear = false;
+  }
 
   if(keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter || keyval == GDK_KEY_equal){
     calculate(app_ui, buffer, input); 
     app_ui->clear = true;
     return true;
+  }else if(keyval >= GDK_KEY_0 && keyval <= GDK_KEY_9){
+    int num = keyval - GDK_KEY_0;
+    
+    size_t length = count_digits(num) + strlen(input) + 1;
+    char *new_input = malloc(length);
+    if(new_input == NULL){
+      return false;
+    }
+    
+    snprintf(new_input, length, "%s%d", input, num);
+    gtk_entry_buffer_set_text(buffer, new_input, -1);
+    
+    free(new_input);
+    new_input = NULL;
+
+    return true;
+  }else if(keyval == GDK_KEY_plus || keyval == GDK_KEY_minus || keyval == GDK_KEY_asterisk || keyval == GDK_KEY_slash){
+    char operator = (char)keyval;
+    
+    size_t length = 1 + strlen(input) + 1;
+    char *new_input = malloc(length);
+    if(new_input == NULL){
+      return false;
+    }
+
+    snprintf(new_input, length, "%s%c", input, operator);
+    gtk_entry_buffer_set_text(buffer, new_input, -1);
+
+    free(new_input);
+    new_input = NULL;
+
+    return true;
+  }else if(keyval == GDK_KEY_BackSpace){
+    int length = gtk_entry_buffer_get_length(buffer);
+
+    gtk_entry_buffer_delete_text(buffer, length - 1, 1);
+
+    return true;
   }
   return false;
+}
+
+int count_digits(int num){
+  int counter = 0;
+  while(num != 0){
+    num = num / 10;
+    counter++;
+  }
+  return counter;
 }
 
 static gboolean timeout(gpointer data){
