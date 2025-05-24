@@ -25,7 +25,9 @@
 </h3>
 </div>
 
-![screenshot](https://i.imgur.com/B0MuRKs.gif)
+<p align="center">
+    <img src="https://i.imgur.com/B0MuRKs.gif" alt="screenshot">
+</p>
 
 
 ## Installation 
