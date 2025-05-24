@@ -26,7 +26,7 @@
 </div>
 
 <p align="center">
-    <img src="https://i.imgur.com/B0MuRKs.gif" alt="screenshot">
+    <img src="https://i.imgur.com/g3HDjgD.gif" alt="screenshot">
 </p>
 
 
